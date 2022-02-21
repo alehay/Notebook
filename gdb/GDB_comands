@@ -1,0 +1,126 @@
+gdb --args executablename arg1 arg2 arg3
+gdb --args demise-isp-debug -l ~/daemonTemp/journal.txt -c /etc/demise-isp.conf
+
+
+ps aux | grep имя_процесса
+
+ps aux | grep имя_процесса | grep -v grep
+
+kill - остановить процесс
+
+ps -p 1337 -o comm=    имя процесса по pid
+
+
+
+next - шаг
+step - шаг с заходом
+finish - шаг с выходом из функции
+
+выполнить до :строки
+until | u number_of_list_string
+until | u *func_name+offset
+выполнить до адреса.
+until | u *address
+
+
+установить агрументы
+set args
+показать аргументы
+show args
+
+where - цепочка вызовов
+
+run command-line-arguments
+
+/*Перемещает текущее окно так, чтобы GDB анализировал место,
+из которого произошел вызов данного окна. Очень часто Ваша программа может войти в библиотечную функцию - такую,
+для которой не доступен исходный код, например, в процедуру ввода-вывода.
+Вам может понадобиться несколько команд up, чтобы перейти в точку программы, которая была выполнена последней.*/
+up - вернутся на окно вверх
+
+down - обратный up
+
+(gdb) print A[i] $2 = -16
+
+(gdb) print $2 + ML $3 = -9
+
+сообщает нам, что величина A[i] в текущем окне равна -16, и что при добавлении этого значения к переменной ML получится -9.
+
+/* если включена опция g3 можно посмотреть листинг */
+list func_name
+
+/*список функций */
+info functions | i func
+
+распределение виртуальной памяти
+info proc mappings
+
+просмотр регистров
+info registers
+info all-registers
+info registers //reggroup …
+
+
+info args
+info locals
+info frame
+
+инфо о процессах 
+info threads
+выбрать процесс
+thread number
+
+
+расстановка точек останова
+b func_name
+b *func_name+offset
+b *address
+
+info break
+disable/enable breakpoint_number
+delete breakpoint_number
+ignore breakpoint_number n  //  остановится на этой точке пройдя ее n раз
+
+выполнять до следующей точки останова
+continue | c
+
+просмотр стека 
+telescope
+telescope $rsp+64
+
+Для отображения значения по указанному адресу используется команда X
+
+x/i - инструкция
+x/x - hex
+x/s - строка
+x/a - адрес
+
+размер вывода
+
+x/b - 8-bit
+x/h - 16-bit
+x/w - 32-bit
+x/g - 64-bit
+
+пример:
+x/64bx
+x/i $pc
+
+/**  когда во время отладки мы проскочили интересующую нас функцию,
+и теперь снова надо перезапускать отладчик, проходить тот же путь на CFG и т.п.
+Чтобы избежать этого, в gdb есть такая фишка как Reverse Debug,
+позволяющая сохранить состояние программы и обратно отладить до него.*/
+
+
+Для этого, после запуска отладчика укажем gdb, что хотим начать использовать reverse debug
+и стоит сохранять состояния программы
+
+record
+
+reverse-step
+reverse-next
+
+
+Сдампить участок памяти ( часто необходимо при работе с распаковщиками )
+
+dump memory output_file start_addr end_addr
