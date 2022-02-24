@@ -1,0 +1,1 @@
+curl --capath /etc/ssl/certs https://yandex.ru - послать запрос, с указанием где лежат сертефиката

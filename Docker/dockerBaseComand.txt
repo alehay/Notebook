@@ -1,0 +1,180 @@
+
+
+
+
+docker ps -a   - список контейнеров
+
+docker stop 0001dockerfile - остановка контейнера
+
+docker rm 0001dockerfile  - удалить контейнер  
+From - начало докер файла, базовый образ,  внутри которого исполняются команды
+
+RUN - команда
+
+LABLE - метки,
+
+EXPOSE - какие порты должны быть опубликованы, наружу ,
+
+ENV - переменная окружения
+
+ADD   - копирует, и может использовать внешние ссыкли 
+COPY  - копирует с локальной файловой системы сборки
+
+ENTRYPOINT - указывает команду которая всегда будет выполнятся при запуске
+
+CMD - определяет аргументы которые будут переданны ENTRYPOINT
+
+
+
+
+
+docker ps -a   - список контейнеров
+
+docker stop 0001dockerfile - остановка контейнера
+
+docker rm 0001dockerfile  - удалить контейнер  
+
+docker images - просмотреть образы
+docker image rm - удаление образа 
+
+docker logs логи 
+
+
+docker exec -ti clichouse_prue_test_clickhouse-test_1 /bin/sh
+зайти внутрь контейнера
+
+/*********** пример сборки ***********/
+
+docker buil -t   $NAME
+
+docker run -d \
+--name $NAME
+--publish 8888:80 \
+$NAME
+
+/*********** конец примера ********** /
+
+
+Команда run с флагом -it подключает интерактивный tty в контейнер.
+Теперь можно запускать сколько угодно много команд внутри. Попробуйте.
+
+
+
+
+/*******************YANDEX Clickhouse ************/
+
+docker run -d --name some-clickhouse-server /
+--ulimit nofile=262144:262144 /
+--volume=$HOME/proj/biling/clickHouse_db:/var/lib/clickhouse yandex/clickhouse-server 
+
+
+
+
+/************* пример как поднимается контейнер    *****************/
+
+docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=rootpassword123 -d mysql/mysql-server:5.6
+
+-p 3306:3306   сопоставление порта  хоста и порта контейнера
+-name имя контейнера
+
+
+// забираем образ ПХП 
+docker pull nimmis/apache-php5
+
+
+
+// запуск контейнера связанного с mysql  -link устарешвая фукнция
+docker run -tid -p 80:80 --name apache2 --link mysql nimmis/apache-php5
+
+запущен контйнер порт 80 кототорого сопоставлен с портом 80 хоста, и этот контейнер
+связан с контейнером БД
+
+// проверка сетей контейнеров 
+docker inspect mysql 
+docker inspect apache2
+
+// проверка сети из контейнера
+docker exec -ti apache2 bash 
+ping mysql
+
+
+--volume :
+ первое поле, имя тома которое уникально для хост машины
+ второе поле это файл или каталог монтируются в контейнере.
+ третье поле не обязательное , принимает параметры через запятую.
+
+--mount:
+  состоит из несколких пар <key>=<value>, разделенных запятыми , синтаскис более
+  подробен но легче для понимания.
+
+  type - тип монтирования , может быть bind , volume, или tmpfs. (тут речь пока только volume)
+  source - "источник" монтирования, для именованных томов, это имя тома.
+  destination - назначение, путь по которому файл или каталог монтируются в контейнере.
+    ( может быть помечено как destination, dst or target.)
+  readonly  - устанавливает монтирование только для четения 
+  volume-opt - можно указать более одного раза , принимает пару ключь значения,
+    состоящую из имени параметра и его значения.
+
+
+
+/****** пример использовани volumes в docker compuse ********/
+
+version: "3.9"
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - myapp:/home/node/app
+volumes:
+  myapp:
+
+/*********  конеч примера ********/
+
+том создается при первом вызове docker compuse
+
+
+/********* cозданный вне compose **********/
+
+version: "3.9"
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - myapp:/home/node/app
+volumes:
+  myapp:
+    external: true
+
+
+/*********** конец примера *********/
+
+каждый контейнер service использует свой собственный локальный том.
+драйверы локального тома не позволяют контейнерам совместно использовать данные,
+но некоторые драйверы поддерживают общее хранилище.
+
+
+запуская контейнер который создает новый том, как показано выше,
+и у контейнера есть файлы или каталоги в каталоге,
+который нужно смонтировтаь, содержимое каталога копируюется в том.
+
+Затем контейнер монтирует и использует том, а другие контейнеры,
+которые использут этот том, так же имеют предварительно заполненое содержимое.
+
+
+
+
+docker run -d -it --name ubuntu_build -v /scr:/home/kudakov/proj/screen-recording/server -v /build:/home/kudakov/proj/screen-recording/docker_build/build 76933cc48093
+
+
+docker run -d -it --name ubuntu_build -v /home/kudakov/proj/screen-recording/server:/app/src -v /home/kudakov/proj/screen-recording/docker_build/build:/app/build ubuntu18_build
+
+docker build -t ubuntu18_build .
+
+
+
+Specify both ports (HOST:CONTAINER)
+
+
+
+подключение к Mysql котороый в контейнере чей порт расшарен как 9090:3306
+mysql --host=127.0.0.1 --port=9090 --user=root --password
