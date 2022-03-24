@@ -24,6 +24,16 @@ docker exec -ti clichouse_prue_test_clickhouse-test_1 /bin/sh
 
 docker system prune - очистика всех неиспользуемых контейнеров, 
 
+make lint - вывод диагностики dcoker `
+
+пример монтирования директории
+docker container run --mount source=my_volume, target=/container/path/for/volume my_image
+
+
+собрать образ с именем
+docker build -t image_name .
+
+
 /************************ команды docker file  *******************/
 RUN - команда
 LABLE - метки,
